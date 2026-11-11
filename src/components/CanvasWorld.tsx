@@ -3,6 +3,8 @@ import { APPS, WORLD, type AppId } from '../apps';
 import wallpaper from '../assets/wallpaper.png';
 
 const ReportingApp = lazy(() => import('../reporting/ReportingApp').then((m) => ({ default: m.ReportingApp })));
+const ActionHubApp = lazy(() => import('../actionhub/ActionHubApp').then((m) => ({ default: m.ActionHubApp })));
+const LIVE = { reporting: ReportingApp, actionhub: ActionHubApp } as const;
 
 interface Props {
   focused: AppId | null;
@@ -28,7 +30,8 @@ export const CanvasWorld = forwardRef<HTMLDivElement, Props>(function CanvasWorl
       <div className="world__wallpaper" style={{ backgroundImage: `url(${wallpaper})` }} aria-hidden />
       {APPS.map((app) => {
         const state = focused === null ? 'idle' : focused === app.id ? 'focused' : 'dimmed';
-        if (app.live === 'reporting') {
+        if (app.live) {
+          const Live = LIVE[app.live];
           const interactive = focused === app.id && !overview;
           return (
             <div
@@ -38,7 +41,7 @@ export const CanvasWorld = forwardRef<HTMLDivElement, Props>(function CanvasWorl
               aria-label={app.name}
             >
               <Suspense fallback={<img src={app.image} alt="" width={app.width} height={app.height} draggable={false} />}>
-                <ReportingApp />
+                <Live />
               </Suspense>
               {/* Until the camera is in this app, a click flies there instead of reaching the UI. */}
               {!interactive && (
