@@ -1,3 +1,4 @@
+import { MaiseyOrb } from '../orb/MaiseyOrb';
 import {
   useEffect,
   useId,
@@ -15,8 +16,6 @@ import chevronIcon from '../assets/search/chevron-down.svg';
 import returnIcon from '../assets/search/return.svg';
 import pdfPage from '../assets/search/pdf-page.svg';
 import pdfMark from '../assets/search/pdf-mark.svg';
-import maiseyAvatar from '../assets/dock/a156c.png';
-import maiseyGlow from '../assets/dock/ee361.png';
 import messagesIcon from '../assets/dock/264ec.png';
 import { CATEGORY_ORDER, SEARCH_INDEX, rank, type Category, type SearchItem, type Visual } from './searchIndex';
 
@@ -456,10 +455,7 @@ function ItemVisual({ visual }: { visual: Visual }) {
 function MaiseyAvatar() {
   return (
     <span className="qs-maisey">
-      <img src={maiseyAvatar} alt="" />
-      <span className="qs-maisey__glow">
-        <img src={maiseyGlow} alt="" />
-      </span>
+      <MaiseyOrb size={24} ring={false} />
     </span>
   );
 }

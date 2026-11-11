@@ -1,9 +1,9 @@
+import { MaiseyOrb } from '../orb/MaiseyOrb';
 import { useEffect, useMemo, useRef, useState, type ReactNode } from 'react';
 import { useHub } from './store';
 import { EMOJI_SET, ICON_SET, PEOPLE, TAGS, type Priority } from './model';
 import { Av, I, ListIcon, MItem, Pop, PriorityIcon, plain } from './ui';
 import { PriorityChip } from './Detail';
-import maiseyAvatar from '../assets/dock/a156c.png';
 
 function Modal({ title, onClose, children, footer, className = '', headRight }: { title: ReactNode; onClose: () => void; children: ReactNode; footer?: ReactNode; className?: string; headRight?: ReactNode }) {
   useEffect(() => {
@@ -296,22 +296,18 @@ export function MaiseyFlow({ text, listId }: { text: string; listId: string }) {
       onClose={() => hub.setModal(null)}
       title={
         <span className="ah-maisey-title">
-          <img src={maiseyAvatar} alt="" /> Ask Maisey
+          <MaiseyOrb size={24} state={step === 'thinking' ? 'thinking' : 'idle'} /> Ask Maisey
         </span>
       }
     >
       <div className="ah-chat">
         <div className="ah-chat__user">{text}</div>
-        {step === 'thinking' ? (
-          <div className="ah-chat__status">
-            <img src={maiseyAvatar} alt="" />
-            <span className="ah-shimmer">Organizing your day...</span>
-          </div>
-        ) : (
+        <div className="ah-chat__status">
+          <MaiseyOrb size={24} state={step === 'thinking' ? 'thinking' : 'idle'} />
+          {step === 'thinking' ? <span className="ah-shimmer">Organizing your day...</span> : 'Thought for 4 seconds'}
+        </div>
+        {step === 'thinking' ? null : (
           <>
-            <div className="ah-chat__status">
-              <img src={maiseyAvatar} alt="" /> Thought for 4 seconds
-            </div>
             {step === 'plan' && (
               <div className="ah-chat__text">
                 Here’s what I’ll create:

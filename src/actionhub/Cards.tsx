@@ -1,3 +1,4 @@
+import { MaiseyOrb } from '../orb/MaiseyOrb';
 import { useState, type MouseEvent, type ReactNode } from 'react';
 import { useHub } from './store';
 import { ASSETS, PEOPLE, SNOOZE_OPTIONS, TAGS, canFeedback, canSnooze, type Item } from './model';
@@ -6,7 +7,6 @@ import report from './assets/report-vector.svg';
 import reportMask from './assets/report-mask.svg';
 import reportLayer from './assets/report-layer.svg';
 import stickyNote from '../assets/launcher/placeholder.png';
-const maiseyMark = ASSETS.maiseyAvatar;
 
 /* §5 Action item types. One card, everywhere it appears. */
 
@@ -210,7 +210,7 @@ export function ItemBody({ item }: { item: Item }) {
       <div className="ah-card ah-card--glass ah-card--suggestion">
         <div className="ah-card__head">
           <span className="ah-sugg-label">
-            <img src={maiseyMark} alt="" /> SUGGESTIONS
+            <MaiseyOrb size={24} /> SUGGESTIONS
           </span>
           <Stamp item={item} />
         </div>

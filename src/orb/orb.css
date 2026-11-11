@@ -1,0 +1,24 @@
+.maisey-orb {
+  position: relative;
+  display: inline-block;
+  flex: none;
+  border-radius: 50%;
+  overflow: hidden;
+  vertical-align: middle;
+}
+.maisey-orb > canvas { display: block; width: 100%; height: 100%; }
+.maisey-orb--ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+}
+/* No WebGL: a still that matches the default "Maisey" palette. */
+.maisey-orb--still {
+  background:
+    radial-gradient(60% 35% at 45% 55%, rgba(53, 64, 208, 0.85), transparent 70%),
+    radial-gradient(70% 50% at 60% 45%, rgba(106, 123, 255, 0.7), transparent 75%),
+    radial-gradient(circle at 50% 50%, #f6f3ff 40%, #e8dcff 80%, #ffd2f4 100%);
+}

@@ -1,9 +1,9 @@
+import { MaiseyOrb } from '../orb/MaiseyOrb';
 import { useMemo, useState, type ReactNode } from 'react';
 import { useHub, type Chip } from './store';
 import { SECTIONS, SNOOZE_OPTIONS, dayParts, isOpen, type Item, type Section } from './model';
 import { Deck, Row } from './Cards';
 import { I, ListIcon, MItem, Pop, plain } from './ui';
-import maiseyAvatar from '../assets/dock/a156c.png';
 
 const CHIP_DEFS: { chip: Chip; label: string }[] = [
   { chip: 'Task', label: 'Tasks' },
@@ -447,7 +447,7 @@ export function Summary() {
     );
   return (
     <aside className="ah-summary" aria-label="Maisey Summary">
-      <img className="ah-summary__avatar" src={maiseyAvatar} alt="" />
+      <MaiseyOrb className="ah-summary__avatar" size={26} />
       <div className="ah-summary__head">
         MAISEY SUMMARY
         <span className="ah-chip-wrap">

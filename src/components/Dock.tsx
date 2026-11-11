@@ -1,8 +1,7 @@
-import type { ReactNode } from 'react';
+import { useState, type ReactNode } from 'react';
+import { MaiseyOrb, type OrbState } from '../orb/MaiseyOrb';
 import { DOCK_TARGETS, type AppId, type DockSlot } from '../apps';
 
-import avatarBase from '../assets/dock/a156c.png';
-import avatarGlow from '../assets/dock/ee361.png';
 import micIcon from '../assets/dock/c6fd9.svg';
 import cursorSparkIcon from '../assets/dock/36847.svg';
 import pillDivider from '../assets/dock/926cc.svg';
@@ -139,6 +138,7 @@ function Trash() {
 
 /** Figma: Dynamic Dock 2487:15944 */
 export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOpen, onToggleSearch }: Props) {
+  const [orbState, setOrbState] = useState<OrbState>('idle');
   return (
     <nav className="dock" aria-label="Dock">
       <div className="dock__glass" aria-hidden>
@@ -150,14 +150,9 @@ export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOp
       <div className="dock__row">
         {/* Ask Maisey */}
         <div className="dock__maisey-wrap">
-          <div className="maisey-pill">
+          <div className="maisey-pill" onPointerEnter={() => setOrbState('listening')} onPointerLeave={() => setOrbState('idle')}>
             <div className="maisey-pill__avatar">
-              <span className="maisey-pill__avatar-bg" />
-              <img className="maisey-pill__avatar-img" src={avatarBase} alt="" />
-              <span className="maisey-pill__avatar-glow">
-                <img src={avatarGlow} alt="" />
-              </span>
-              <span className="maisey-pill__avatar-ring" />
+              <MaiseyOrb size={40} state={orbState} />
             </div>
             <div className="maisey-pill__text">Ask Maisey</div>
             <div className="maisey-pill__actions">

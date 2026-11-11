@@ -39,6 +39,7 @@ npm run dev
 | `src/search/` | Quick Search (ClickUp doc "Quick Search", Figma Maisey OS – Core `2364:13466`); sample index in `searchIndex.ts` |
 | `src/reporting/` | **Reporting app** (live window on the canvas) — ClickUp "Reporting App Design Spec", Figma `Maisey Reporting 888:83020`. Preview, Builder, Stazy chat, Carbon Charts tiles |
 | `src/actionhub/` | **Action Hub** (live window on the canvas) — ClickUp "Action Hub" + "Task details" spec, Figma `IztFZwQpERVCKic0Bw93TE`. All feed, 5 sections, My Lists (max 10), filters/sort/select, snooze, trash + undo, task details drawer, new task / brain dump with Maisey plan flow, lists CRUD, move to list, feedback, ⌘T / ⌘B / ⌘L |
+| `src/orb/` | **Maisey orb** — shader + motion sim ported 1:1 from Maisey Orb Studio ("blue silk ribbon in a frosted ball", default Maisey palette, 10 s seamless loop, idle / thinking / listening / talking with crossfades). Raw WebGL, one shared context for every orb. `<MaiseyOrb size state />`. Used in the dock pill (listens on hover), Action Hub summary / suggestions / Ask Maisey flow (thinks while organizing), Quick Search |
 | `src/launcher/` | App Launcher (ClickUp spec "App Launcher", Figma Maisey OS – Core `139:3745`) |
 | `public/canvas/*.webp` | 2x exports of each app window from Figma |
 
