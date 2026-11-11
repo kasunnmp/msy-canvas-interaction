@@ -864,6 +864,10 @@ button:focus-visible {
   padding-right: 4px;
 }
 
+.dock-btn--people {
+  justify-content: center;
+}
+
 .dock__people img {
   display: block;
 }

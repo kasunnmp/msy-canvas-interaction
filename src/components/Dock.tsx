@@ -231,11 +231,13 @@ export function Dock({ activeApp, onOpen }: Props) {
             <Trash />
           </div>
 
-          <div className="dock__people">
-            <img src={profileA} alt="" width={44} height={44} />
-            <Badge className="badge--people">5</Badge>
-            <img src={profileB} alt="" width={44} height={44} />
-          </div>
+          <DockButton slot="people" label="Maisey Minions chat" activeApp={activeApp} onOpen={onOpen} className="dock-btn--people">
+            <span className="dock__people">
+              <img src={profileA} alt="" width={44} height={44} />
+              <Badge className="badge--people">5</Badge>
+              <img src={profileB} alt="" width={44} height={44} />
+            </span>
+          </DockButton>
         </div>
       </div>
 

@@ -44,6 +44,7 @@ export const DOCK_TARGETS = {
   messages: 'internal-chat',
   folder: 'foxtale-studio',
   grid: 'maisey-minions',
+  people: 'maisey-minions',
 } as const satisfies Record<string, AppId>;
 
 export type DockSlot = keyof typeof DOCK_TARGETS;
