@@ -9,6 +9,7 @@ import { TouchIndicator } from './components/TouchIndicator';
 import { AppLauncher } from './launcher/AppLauncher';
 import type { LauncherApp } from './launcher/launcherApps';
 import { QuickSearch } from './search/QuickSearch';
+import { MaiseyChat } from './maisey/MaiseyChat';
 import type { SearchItem } from './search/searchIndex';
 
 const HOME_CAMERA = fitRect(HOME_RECT);
@@ -37,6 +38,8 @@ export default function App() {
   const [overview, setOverview] = useState(false);
   const [launcherOpen, setLauncherOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+  const [maiseyOpen, setMaiseyOpen] = useState(false);
+  const [maiseySeed, setMaiseySeed] = useState<{ text: string; key: number } | null>(null);
   const returnFocus = useRef<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
@@ -77,6 +80,7 @@ export default function App() {
   const openSearch = useCallback(() => {
     returnFocus.current = document.activeElement as HTMLElement | null;
     setLauncherOpen(false);
+    setMaiseyOpen(false);
     setSearchOpen(true);
   }, []);
   /** Dismiss Quick Search and hand focus back to where the user was (spec §8). */
@@ -97,14 +101,30 @@ export default function App() {
     },
     [closeSearch, goToApp],
   );
-  /** AI hand-off: closes search and opens the Maisey conversation (Maisey Minions for now). */
-  const askMaisey = useCallback(() => {
-    closeSearch();
+  /** Ask Maisey (Dock pill): the pill opens into the chat composer. */
+  const openMaisey = useCallback(() => {
+    setSearchOpen(false);
+    setLauncherOpen(false);
+    setMaiseyOpen(true);
+  }, []);
+  const closeMaisey = useCallback(() => setMaiseyOpen(false), []);
+  /** AI hand-off from Quick Search: the query is asked in the Maisey chat. */
+  const askMaisey = useCallback(
+    (query: string) => {
+      closeSearch();
+      if (query.trim()) setMaiseySeed({ text: query.trim(), key: Date.now() });
+      setMaiseyOpen(true);
+    },
+    [closeSearch],
+  );
+  const viewMinion = useCallback(() => {
+    setMaiseyOpen(false);
     goToApp('maisey-minions');
-  }, [closeSearch, goToApp]);
+  }, [goToApp]);
 
   const openLauncher = useCallback(() => {
     setSearchOpen(false);
+    setMaiseyOpen(false);
     setLauncherOpen(true);
   }, []);
   const closeLauncher = useCallback(() => setLauncherOpen(false), []);
@@ -133,7 +153,7 @@ export default function App() {
         toggleSearch();
         return;
       }
-      if (launcherOpen || searchOpen) return; // overlays handle their own keys
+      if (launcherOpen || searchOpen || maiseyOpen) return; // overlays handle their own keys
       // Keys typed inside a live app (e.g. Reporting) belong to that app.
       if ((e.target as HTMLElement | null)?.closest?.('.app-window--live, input, textarea, select, [contenteditable="true"]')) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
@@ -143,7 +163,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goHome, goToApp, toggleOverview, launcherOpen, searchOpen, toggleSearch]);
+  }, [goHome, goToApp, toggleOverview, launcherOpen, searchOpen, maiseyOpen, toggleSearch]);
 
   // Trackpad pinch (ctrl+wheel): pinch in → overview, pinch out → back.
   useEffect(() => {
@@ -183,7 +203,8 @@ export default function App() {
         <AppLauncher open={launcherOpen} onClose={closeLauncher} onLaunch={launchFromLauncher} />
         {searchOpen && <QuickSearch onClose={closeSearch} onOpenItem={openSearchItem} onAskMaisey={askMaisey} />}
         <StatusBar overview={overview} onToggleOverview={toggleOverview} />
-        <div className={`dock-slot${launcherOpen ? ' is-hidden' : ''}`} aria-hidden={launcherOpen}>
+        <MaiseyChat open={maiseyOpen} onClose={closeMaisey} onViewMinion={viewMinion} seed={maiseySeed} />
+        <div className={`dock-slot${launcherOpen || maiseyOpen ? ' is-hidden' : ''}`} aria-hidden={launcherOpen || maiseyOpen}>
           <Dock
             activeApp={focused}
             onOpen={onDockOpen}
@@ -191,6 +212,8 @@ export default function App() {
             onOpenLauncher={openLauncher}
             searchOpen={searchOpen}
             onToggleSearch={toggleSearch}
+            maiseyOpen={maiseyOpen}
+            onAskMaisey={openMaisey}
           />
         </div>
         <TouchIndicator stage={stageEl} />

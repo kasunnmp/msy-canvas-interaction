@@ -34,6 +34,9 @@ interface Props {
   onOpenLauncher: () => void;
   searchOpen: boolean;
   onToggleSearch: () => void;
+  /** Ask Maisey chat (Figma Maisey-Minions 746:11381) is open. */
+  maiseyOpen: boolean;
+  onAskMaisey: () => void;
 }
 
 function Badge({ children, className = '' }: { children: ReactNode; className?: string }) {
@@ -137,7 +140,7 @@ function Trash() {
 }
 
 /** Figma: Dynamic Dock 2487:15944 */
-export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOpen, onToggleSearch }: Props) {
+export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOpen, onToggleSearch, maiseyOpen, onAskMaisey }: Props) {
   const [orbState, setOrbState] = useState<OrbState>('idle');
   return (
     <nav className="dock" aria-label="Dock">
@@ -150,7 +153,15 @@ export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOp
       <div className="dock__row">
         {/* Ask Maisey */}
         <div className="dock__maisey-wrap">
-          <div className="maisey-pill" onPointerEnter={() => setOrbState('listening')} onPointerLeave={() => setOrbState('idle')}>
+          <button
+            type="button"
+            className="maisey-pill"
+            aria-label="Ask Maisey"
+            aria-expanded={maiseyOpen}
+            onClick={onAskMaisey}
+            onPointerEnter={() => setOrbState('listening')}
+            onPointerLeave={() => setOrbState('idle')}
+          >
             <div className="maisey-pill__avatar">
               <MaiseyOrb size={40} state={orbState} />
             </div>
@@ -166,7 +177,7 @@ export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOp
                 <img src={pillDivider} alt="" />
               </div>
             </div>
-          </div>
+          </button>
         </div>
 
         <div className="dock__apps">
