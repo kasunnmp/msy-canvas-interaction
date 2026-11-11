@@ -1,0 +1,15 @@
+<svg preserveAspectRatio="none" overflow="visible" style="display: block;" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Frame">
+<g id="Vector">
+<use xlink:href="#stroke0_0_44" fill="white"/>
+<mask id="stroke1_0_44" maskUnits="userSpaceOnUse" x="2.775" y="2.7625" width="19" height="19" fill="black">
+<rect fill="white" x="2.775" y="2.7625" width="19" height="19"/>
+<use xlink:href="#stroke0_0_44"/>
+</mask>
+<path d="M11.3625 20.2V14.3875H13.0375V16.45H20.2125V18.125H13.0375V20.2H11.3625ZM3.775 18.125V16.45H9.6875V18.125H3.775ZM7.4125 14.8875V12.825H3.775V11.15H7.4125V9.075H9.0875V14.8875H7.4125ZM10.7625 12.825V11.15H20.2125V12.825H10.7625ZM14.3 9.575V3.7625H15.975V5.8375H20.2125V7.5125H15.975V9.575H14.3ZM3.775 7.5125V5.8375H13.225V7.5125H3.775Z" stroke-width="2" stroke="black" stroke-opacity="0.29" mask="url(#stroke1_0_44)"/>
+</g>
+</g>
+<defs>
+<path id="stroke0_0_44" d="M11.3625 20.2V14.3875H13.0375V16.45H20.2125V18.125H13.0375V20.2H11.3625ZM3.775 18.125V16.45H9.6875V18.125H3.775ZM7.4125 14.8875V12.825H3.775V11.15H7.4125V9.075H9.0875V14.8875H7.4125ZM10.7625 12.825V11.15H20.2125V12.825H10.7625ZM14.3 9.575V3.7625H15.975V5.8375H20.2125V7.5125H15.975V9.575H14.3ZM3.775 7.5125V5.8375H13.225V7.5125H3.775Z"/>
+</defs>
+</svg>

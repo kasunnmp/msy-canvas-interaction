@@ -1,0 +1,21 @@
+/* Motion tokens — from .claude/skills/mecury-interactions/references/motion-tokens.css */
+:root {
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snap: cubic-bezier(0.3, 0.7, 0.1, 1);
+
+  --dur-instant: 80ms;
+  --dur-quick: 180ms;
+  --dur-appear: 420ms;
+  --dur-move: 750ms;
+
+  --dim-unfocused: 0.3;
+
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur-appear: 120ms;
+    --dur-move: 150ms;
+  }
+}
