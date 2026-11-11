@@ -21,11 +21,13 @@ export interface AppWindow {
   width: number;
   height: number;
   image: string;
+  /** Rendered as a live app instead of the Figma image. */
+  live?: 'reporting';
 }
 
 export const APPS: AppWindow[] = [
   { id: 'internal-chat', name: 'Internal Chat', x: 26, y: 25, width: 1211, height: 720, image: `${import.meta.env.BASE_URL}canvas/internal-chat.webp` },
-  { id: 'reports', name: 'Reports', x: 1315, y: 29, width: 1208, height: 720, image: `${import.meta.env.BASE_URL}canvas/reports.webp` },
+  { id: 'reports', name: 'Reports', x: 1315, y: 29, width: 1208, height: 720, image: `${import.meta.env.BASE_URL}canvas/reports.webp`, live: 'reporting' },
   { id: 'action-hub', name: 'Action Hub', x: 25, y: 822, width: 1211, height: 720, image: `${import.meta.env.BASE_URL}canvas/action-hub.webp` },
   { id: 'foxtale-studio', name: 'Foxtale Studio', x: 1315, y: 822, width: 1208, height: 720, image: `${import.meta.env.BASE_URL}canvas/foxtale-studio.webp` },
   { id: 'maisey-minions', name: 'Maisey Minions', x: 28, y: 1591, width: 1211, height: 720, image: `${import.meta.env.BASE_URL}canvas/maisey-minions.webp` },

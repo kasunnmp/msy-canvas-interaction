@@ -134,6 +134,8 @@ export default function App() {
         return;
       }
       if (launcherOpen || searchOpen) return; // overlays handle their own keys
+      // Keys typed inside a live app (e.g. Reporting) belong to that app.
+      if ((e.target as HTMLElement | null)?.closest?.('.app-window--live, input, textarea, select, [contenteditable="true"]')) return;
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Escape') goHome();
       else if (e.key === 'o' || e.key === 'O') toggleOverview();

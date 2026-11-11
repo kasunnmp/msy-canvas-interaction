@@ -1,6 +1,8 @@
-import { forwardRef } from 'react';
+import { forwardRef, lazy, Suspense } from 'react';
 import { APPS, WORLD, type AppId } from '../apps';
 import wallpaper from '../assets/wallpaper.png';
+
+const ReportingApp = lazy(() => import('../reporting/ReportingApp').then((m) => ({ default: m.ReportingApp })));
 
 interface Props {
   focused: AppId | null;
@@ -26,6 +28,25 @@ export const CanvasWorld = forwardRef<HTMLDivElement, Props>(function CanvasWorl
       <div className="world__wallpaper" style={{ backgroundImage: `url(${wallpaper})` }} aria-hidden />
       {APPS.map((app) => {
         const state = focused === null ? 'idle' : focused === app.id ? 'focused' : 'dimmed';
+        if (app.live === 'reporting') {
+          const interactive = focused === app.id && !overview;
+          return (
+            <div
+              key={app.id}
+              className={`app-window app-window--live is-${state}${overview ? ' in-overview' : ''}`}
+              style={{ left: app.x, top: app.y, width: app.width, height: app.height }}
+              aria-label={app.name}
+            >
+              <Suspense fallback={<img src={app.image} alt="" width={app.width} height={app.height} draggable={false} />}>
+                <ReportingApp />
+              </Suspense>
+              {/* Until the camera is in this app, a click flies there instead of reaching the UI. */}
+              {!interactive && (
+                <button type="button" className="app-window__veil" aria-label={`Go to ${app.name}`} tabIndex={overview ? 0 : -1} onClick={() => onWindowClick(app.id)} />
+              )}
+            </div>
+          );
+        }
         return (
           <button
             key={app.id}
