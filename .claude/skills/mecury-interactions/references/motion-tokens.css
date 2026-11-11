@@ -1,0 +1,59 @@
+/* Mecury interactions — motion tokens */
+:root {
+  --ease-settle: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --ease-snap: cubic-bezier(0.3, 0.7, 0.1, 1);
+
+  --dur-instant: 80ms;
+  --dur-quick: 180ms;
+  --dur-appear: 420ms;
+  --dur-move: 750ms;
+  --dur-morph: 1100ms;
+  --dur-zoom-out: 1150ms;
+  --dur-zoom-in: 750ms;
+  --stagger: 30ms;
+
+  --blur-peak: 10px;
+  --blur-backdrop: 8px;
+  --dim-unfocused: 0.3;
+
+  --canvas-bg: #dddddd;
+  --card-bg: #f7f7f7;
+  --card-radius: 12px;
+  --card-shadow: 0 20px 60px rgba(0, 0, 0, 0.08), 0 2px 6px rgba(0, 0, 0, 0.04);
+  --text: #333333;
+  --accent: #3b7cf5;
+  --selection: rgba(140, 140, 255, 0.45);
+}
+
+/* Card entering (new module) */
+@keyframes card-in {
+  from { opacity: 0; transform: translateY(16px) scale(0.98); filter: blur(6px); }
+  to   { opacity: 1; transform: none; filter: none; }
+}
+.card-enter { animation: card-in var(--dur-appear) var(--ease-settle) both; }
+
+/* Fallback motion blur during a pan/swap */
+@keyframes travel-blur {
+  0%   { filter: blur(0); }
+  35%  { filter: blur(var(--blur-peak)); }
+  100% { filter: blur(0); }
+}
+.is-travelling { animation: travel-blur var(--dur-move) var(--ease-settle); }
+
+/* Overlay + background focus */
+.overlay { transition: opacity var(--dur-instant) var(--ease-snap), transform var(--dur-instant) var(--ease-snap); }
+.behind-overlay {
+  filter: blur(6px);
+  opacity: 0.5;
+  transition: filter var(--dur-quick) var(--ease-snap), opacity var(--dur-quick) var(--ease-snap);
+}
+.unfocused { opacity: var(--dim-unfocused); transition: opacity var(--dur-quick) var(--ease-settle); }
+
+/* Camera */
+.canvas-camera { transition: transform var(--dur-move) var(--ease-settle); will-change: transform; }
+.canvas-camera.zooming-out { transition-duration: var(--dur-zoom-out); }
+.canvas-camera.zooming-in  { transition-duration: var(--dur-zoom-in); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --dur-appear: 120ms; --dur-move: 150ms; --dur-morph: 150ms; --dur-zoom-out: 150ms; --dur-zoom-in: 150ms; --blur-peak: 0px; }
+}
