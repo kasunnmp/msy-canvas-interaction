@@ -33,6 +33,8 @@ interface Props {
   onOpen: (slot: DockSlot) => void;
   launcherOpen: boolean;
   onOpenLauncher: () => void;
+  searchOpen: boolean;
+  onToggleSearch: () => void;
 }
 
 function Badge({ children, className = '' }: { children: ReactNode; className?: string }) {
@@ -136,7 +138,7 @@ function Trash() {
 }
 
 /** Figma: Dynamic Dock 2487:15944 */
-export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher }: Props) {
+export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher, searchOpen, onToggleSearch }: Props) {
   return (
     <nav className="dock" aria-label="Dock">
       <div className="dock__glass" aria-hidden>
@@ -175,9 +177,17 @@ export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher }: Props)
         <div className="dock__apps">
           <div className="dock__app-group">
             <div className="dock__icons">
-              <div className="dock__search" aria-label="Search">
+              <button
+                type="button"
+                className={`dock-btn dock-btn--search${searchOpen ? ' is-active' : ''}`}
+                onClick={onToggleSearch}
+                aria-label="Quick Search"
+                aria-expanded={searchOpen}
+                title="Quick Search (Ctrl/⌘ K)"
+              >
                 <img src={searchIcon} alt="" width={44} height={55} />
-              </div>
+                <img className="dock-btn__dot" src={activeDot} alt="" width={4} height={4} />
+              </button>
               <DockButton slot="diamond" label="Action Hub" activeApp={activeApp} onOpen={onOpen}>
                 <span className="app-icon">
                   <img src={diamondApp} alt="" />

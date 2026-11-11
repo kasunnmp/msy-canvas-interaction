@@ -8,6 +8,8 @@ import { DeviceMask } from './components/DeviceMask';
 import { TouchIndicator } from './components/TouchIndicator';
 import { AppLauncher } from './launcher/AppLauncher';
 import type { LauncherApp } from './launcher/launcherApps';
+import { QuickSearch } from './search/QuickSearch';
+import type { SearchItem } from './search/searchIndex';
 
 const HOME_CAMERA = fitRect(HOME_RECT);
 const OVERVIEW_CAMERA = fitRect({ x: 0, y: 0, width: WORLD.width, height: WORLD.height }, 24);
@@ -34,6 +36,8 @@ export default function App() {
   const [focused, setFocused] = useState<AppId | null>(null);
   const [overview, setOverview] = useState(false);
   const [launcherOpen, setLauncherOpen] = useState(false);
+  const [searchOpen, setSearchOpen] = useState(false);
+  const returnFocus = useRef<HTMLElement | null>(null);
 
   useLayoutEffect(() => {
     if (!worldRef.current) return;
@@ -70,7 +74,39 @@ export default function App() {
 
   const onDockOpen = useCallback((slot: DockSlot) => goToApp(DOCK_TARGETS[slot]), [goToApp]);
 
-  const openLauncher = useCallback(() => setLauncherOpen(true), []);
+  const openSearch = useCallback(() => {
+    returnFocus.current = document.activeElement as HTMLElement | null;
+    setLauncherOpen(false);
+    setSearchOpen(true);
+  }, []);
+  /** Dismiss Quick Search and hand focus back to where the user was (spec §8). */
+  const closeSearch = useCallback(() => {
+    setSearchOpen(false);
+    const el = returnFocus.current;
+    returnFocus.current = null;
+    requestAnimationFrame(() => el?.focus?.());
+  }, []);
+  const toggleSearch = useCallback(() => {
+    if (searchOpen) closeSearch();
+    else openSearch();
+  }, [searchOpen, openSearch, closeSearch]);
+  const openSearchItem = useCallback(
+    (item: SearchItem) => {
+      closeSearch();
+      if (item.target) goToApp(item.target);
+    },
+    [closeSearch, goToApp],
+  );
+  /** AI hand-off: closes search and opens the Maisey conversation (Maisey Minions for now). */
+  const askMaisey = useCallback(() => {
+    closeSearch();
+    goToApp('maisey-minions');
+  }, [closeSearch, goToApp]);
+
+  const openLauncher = useCallback(() => {
+    setSearchOpen(false);
+    setLauncherOpen(true);
+  }, []);
   const closeLauncher = useCallback(() => setLauncherOpen(false), []);
   /** Launcher dismisses, and the camera travels to the app if it lives on the canvas. */
   const launchFromLauncher = useCallback(
@@ -87,10 +123,17 @@ export default function App() {
       // Ctrl/⌘ + O toggles the App Launcher (spec §4).
       if ((e.metaKey || e.ctrlKey) && (e.key === 'o' || e.key === 'O')) {
         e.preventDefault();
+        setSearchOpen(false);
         setLauncherOpen((v) => !v);
         return;
       }
-      if (launcherOpen) return; // the launcher handles its own keys
+      // Ctrl/⌘ + K or Ctrl + Space toggles Quick Search (search spec §1).
+      if (((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) || (e.ctrlKey && e.code === 'Space')) {
+        e.preventDefault();
+        toggleSearch();
+        return;
+      }
+      if (launcherOpen || searchOpen) return; // overlays handle their own keys
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Escape') goHome();
       else if (e.key === 'o' || e.key === 'O') toggleOverview();
@@ -98,7 +141,7 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goHome, goToApp, toggleOverview, launcherOpen]);
+  }, [goHome, goToApp, toggleOverview, launcherOpen, searchOpen, toggleSearch]);
 
   // Trackpad pinch (ctrl+wheel): pinch in → overview, pinch out → back.
   useEffect(() => {
@@ -136,6 +179,7 @@ export default function App() {
 
         <DeviceMask />
         <AppLauncher open={launcherOpen} onClose={closeLauncher} onLaunch={launchFromLauncher} />
+        {searchOpen && <QuickSearch onClose={closeSearch} onOpenItem={openSearchItem} onAskMaisey={askMaisey} />}
         <StatusBar overview={overview} onToggleOverview={toggleOverview} />
         <div className={`dock-slot${launcherOpen ? ' is-hidden' : ''}`} aria-hidden={launcherOpen}>
           <Dock
@@ -143,6 +187,8 @@ export default function App() {
             onOpen={onDockOpen}
             launcherOpen={launcherOpen}
             onOpenLauncher={openLauncher}
+            searchOpen={searchOpen}
+            onToggleSearch={toggleSearch}
           />
         </div>
         <TouchIndicator stage={stageEl} />
