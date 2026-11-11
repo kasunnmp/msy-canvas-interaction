@@ -20,6 +20,7 @@ npm run dev
 | Input | Action |
 |---|---|
 | Dock icons | Fly the camera into that app |
+| Dock 4-icon grid / `Ctrl`/`⌘` + `O` | Open the App Launcher (search, paged grid, `Esc` / back to close) |
 | Layers icon (top-left) / `O` / trackpad pinch-in | Zoom out to the whole canvas |
 | Click a window in overview | Fly into it |
 | `1`–`5` | Jump to apps in canvas order |
@@ -34,6 +35,7 @@ npm run dev
 | `src/camera/easing.ts` | Cubic-bezier easing (`ease-settle`) |
 | `src/components/CanvasWorld.tsx` | The canvas: wallpaper + app windows |
 | `src/components/Dock.tsx`, `StatusBar.tsx`, `DeviceMask.tsx` | Chrome, built from Figma |
+| `src/launcher/` | App Launcher (ClickUp spec "App Launcher", Figma Maisey OS – Core `139:3745`) |
 | `public/canvas/*.webp` | 2x exports of each app window from Figma |
 
 ## Figma sources

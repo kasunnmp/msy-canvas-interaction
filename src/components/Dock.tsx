@@ -31,6 +31,8 @@ import activeDot from '../assets/dock/455ba.svg';
 interface Props {
   activeApp: AppId | null;
   onOpen: (slot: DockSlot) => void;
+  launcherOpen: boolean;
+  onOpenLauncher: () => void;
 }
 
 function Badge({ children, className = '' }: { children: ReactNode; className?: string }) {
@@ -134,7 +136,7 @@ function Trash() {
 }
 
 /** Figma: Dynamic Dock 2487:15944 */
-export function Dock({ activeApp, onOpen }: Props) {
+export function Dock({ activeApp, onOpen, launcherOpen, onOpenLauncher }: Props) {
   return (
     <nav className="dock" aria-label="Dock">
       <div className="dock__glass" aria-hidden>
@@ -197,7 +199,14 @@ export function Dock({ activeApp, onOpen }: Props) {
               </DockButton>
             </div>
 
-            <DockButton slot="grid" label="Maisey Minions" activeApp={activeApp} onOpen={onOpen} className="dock-btn--grid">
+            <button
+              type="button"
+              className={`dock-btn dock-btn--grid${launcherOpen ? ' is-active' : ''}`}
+              onClick={onOpenLauncher}
+              aria-label="Open App Launcher"
+              aria-expanded={launcherOpen}
+              title="App Launcher (Ctrl/⌘ O)"
+            >
               <span className="grid-stack">
                 <span className="grid-stack__bg grid-stack__bg--back" />
                 <span className="grid-stack__bg grid-stack__bg--mid" />
@@ -222,7 +231,8 @@ export function Dock({ activeApp, onOpen }: Props) {
                   </span>
                 </span>
               </span>
-            </DockButton>
+              <img className="dock-btn__dot" src={activeDot} alt="" width={4} height={4} />
+            </button>
 
             <div className="dock__divider" aria-hidden>
               <img src={sectionDivider} alt="" />

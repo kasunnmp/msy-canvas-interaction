@@ -37,13 +37,15 @@ export const APPS: AppWindow[] = [
  */
 export const HOME_RECT = { x: 2700, y: 1640, width: 1376, height: 719 };
 
-/** Which dock icon opens which app. Change the mapping here. */
+/**
+ * Which dock icon opens which canvas app. Change the mapping here.
+ * (The 4-icon grid opens the App Launcher instead — see App.tsx.)
+ */
 export const DOCK_TARGETS = {
   diamond: 'action-hub',
   tile: 'reports',
   messages: 'internal-chat',
   folder: 'foxtale-studio',
-  grid: 'maisey-minions',
   people: 'maisey-minions',
 } as const satisfies Record<string, AppId>;
 

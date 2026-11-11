@@ -6,6 +6,8 @@ import { StatusBar } from './components/StatusBar';
 import { Dock } from './components/Dock';
 import { DeviceMask } from './components/DeviceMask';
 import { TouchIndicator } from './components/TouchIndicator';
+import { AppLauncher } from './launcher/AppLauncher';
+import type { LauncherApp } from './launcher/launcherApps';
 
 const HOME_CAMERA = fitRect(HOME_RECT);
 const OVERVIEW_CAMERA = fitRect({ x: 0, y: 0, width: WORLD.width, height: WORLD.height }, 24);
@@ -31,6 +33,7 @@ export default function App() {
 
   const [focused, setFocused] = useState<AppId | null>(null);
   const [overview, setOverview] = useState(false);
+  const [launcherOpen, setLauncherOpen] = useState(false);
 
   useLayoutEffect(() => {
     if (!worldRef.current) return;
@@ -67,9 +70,27 @@ export default function App() {
 
   const onDockOpen = useCallback((slot: DockSlot) => goToApp(DOCK_TARGETS[slot]), [goToApp]);
 
+  const openLauncher = useCallback(() => setLauncherOpen(true), []);
+  const closeLauncher = useCallback(() => setLauncherOpen(false), []);
+  /** Launcher dismisses, and the camera travels to the app if it lives on the canvas. */
+  const launchFromLauncher = useCallback(
+    (app: LauncherApp) => {
+      setLauncherOpen(false);
+      if (app.target) goToApp(app.target);
+    },
+    [goToApp],
+  );
+
   // Keyboard: 1–5 apps, O overview, Esc desktop.
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      // Ctrl/⌘ + O toggles the App Launcher (spec §4).
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'o' || e.key === 'O')) {
+        e.preventDefault();
+        setLauncherOpen((v) => !v);
+        return;
+      }
+      if (launcherOpen) return; // the launcher handles its own keys
       if (e.metaKey || e.ctrlKey || e.altKey) return;
       if (e.key === 'Escape') goHome();
       else if (e.key === 'o' || e.key === 'O') toggleOverview();
@@ -77,14 +98,14 @@ export default function App() {
     };
     window.addEventListener('keydown', onKey);
     return () => window.removeEventListener('keydown', onKey);
-  }, [goHome, goToApp, toggleOverview]);
+  }, [goHome, goToApp, toggleOverview, launcherOpen]);
 
   // Trackpad pinch (ctrl+wheel): pinch in → overview, pinch out → back.
   useEffect(() => {
     if (!stageEl) return;
     let last = 0;
     const onWheel = (e: WheelEvent) => {
-      if (!e.ctrlKey) return;
+      if (!e.ctrlKey || launcherOpen) return;
       e.preventDefault();
       const now = performance.now();
       if (now - last < 600 || Math.abs(e.deltaY) < 4) return;
@@ -94,7 +115,7 @@ export default function App() {
     };
     stageEl.addEventListener('wheel', onWheel, { passive: false });
     return () => stageEl.removeEventListener('wheel', onWheel);
-  }, [stageEl, overview, showOverview, goHome]);
+  }, [stageEl, overview, showOverview, goHome, launcherOpen]);
 
   return (
     <div className="screen">
@@ -114,9 +135,15 @@ export default function App() {
         </div>
 
         <DeviceMask />
+        <AppLauncher open={launcherOpen} onClose={closeLauncher} onLaunch={launchFromLauncher} />
         <StatusBar overview={overview} onToggleOverview={toggleOverview} />
-        <div className="dock-slot">
-          <Dock activeApp={focused} onOpen={onDockOpen} />
+        <div className={`dock-slot${launcherOpen ? ' is-hidden' : ''}`} aria-hidden={launcherOpen}>
+          <Dock
+            activeApp={focused}
+            onOpen={onDockOpen}
+            launcherOpen={launcherOpen}
+            onOpenLauncher={openLauncher}
+          />
         </div>
         <TouchIndicator stage={stageEl} />
       </div>
